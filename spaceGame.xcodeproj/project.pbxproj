@@ -16,21 +16,13 @@
 		7520E5B01E578E44009BF4D4 /* spaceGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7520E5AF1E578E44009BF4D4 /* spaceGameTests.swift */; };
 		7520E5BB1E578E44009BF4D4 /* spaceGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7520E5BA1E578E44009BF4D4 /* spaceGameUITests.swift */; };
 		758F38281E5AA19E00F9E8CB /* enemyShipExplode.sks in Resources */ = {isa = PBXBuildFile; fileRef = 758F38271E5AA19E00F9E8CB /* enemyShipExplode.sks */; };
-		75AA16611E57953900C601EC /* enemyShip.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA16531E57953900C601EC /* enemyShip.png */; };
-		75AA16621E57953900C601EC /* enemyUFO.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA16541E57953900C601EC /* enemyUFO.png */; };
-		75AA16631E57953900C601EC /* laserGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA16551E57953900C601EC /* laserGreen.png */; };
-		75AA16641E57953900C601EC /* laserGreenShot.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA16561E57953900C601EC /* laserGreenShot.png */; };
-		75AA16651E57953900C601EC /* laserRed.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA16571E57953900C601EC /* laserRed.png */; };
-		75AA16661E57953900C601EC /* laserRedShot.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA16581E57953900C601EC /* laserRedShot.png */; };
-		75AA16671E57953900C601EC /* life.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA16591E57953900C601EC /* life.png */; };
-		75AA16681E57953900C601EC /* meteorBig.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA165A1E57953900C601EC /* meteorBig.png */; };
-		75AA16691E57953900C601EC /* meteorSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA165B1E57953900C601EC /* meteorSmall.png */; };
-		75AA166A1E57953900C601EC /* player.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA165C1E57953900C601EC /* player.png */; };
-		75AA166B1E57953900C601EC /* playerDamaged.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA165D1E57953900C601EC /* playerDamaged.png */; };
-		75AA166C1E57953900C601EC /* playerLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA165E1E57953900C601EC /* playerLeft.png */; };
-		75AA166D1E57953900C601EC /* playerRight.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA165F1E57953900C601EC /* playerRight.png */; };
-		75AA166E1E57953900C601EC /* shield.png in Resources */ = {isa = PBXBuildFile; fileRef = 75AA16601E57953900C601EC /* shield.png */; };
-		75AA16701E57954400C601EC /* Background in Resources */ = {isa = PBXBuildFile; fileRef = 75AA166F1E57954400C601EC /* Background */; };
+		75CA22331E5D4DFC00BD4E73 /* Parts.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CA22321E5D4DFC00BD4E73 /* Parts.xcassets */; };
+		75CB19691E5CD79F001C9444 /* Enemies.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CB19681E5CD79F001C9444 /* Enemies.xcassets */; };
+		75CB196B1E5CD7BA001C9444 /* Lasers.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CB196A1E5CD7BA001C9444 /* Lasers.xcassets */; };
+		75CB196D1E5CD7EB001C9444 /* UI.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CB196C1E5CD7EB001C9444 /* UI.xcassets */; };
+		75CB196F1E5CD81F001C9444 /* PlayerShip.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CB196E1E5CD81F001C9444 /* PlayerShip.xcassets */; };
+		75CB19711E5CD835001C9444 /* Background.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CB19701E5CD835001C9444 /* Background.xcassets */; };
+		75CB19731E5CD86E001C9444 /* Effects.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CB19721E5CD86E001C9444 /* Effects.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,21 +58,13 @@
 		7520E5BA1E578E44009BF4D4 /* spaceGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = spaceGameUITests.swift; sourceTree = "<group>"; };
 		7520E5BC1E578E44009BF4D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		758F38271E5AA19E00F9E8CB /* enemyShipExplode.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = enemyShipExplode.sks; sourceTree = "<group>"; };
-		75AA16531E57953900C601EC /* enemyShip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = enemyShip.png; sourceTree = "<group>"; };
-		75AA16541E57953900C601EC /* enemyUFO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = enemyUFO.png; sourceTree = "<group>"; };
-		75AA16551E57953900C601EC /* laserGreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = laserGreen.png; sourceTree = "<group>"; };
-		75AA16561E57953900C601EC /* laserGreenShot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = laserGreenShot.png; sourceTree = "<group>"; };
-		75AA16571E57953900C601EC /* laserRed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = laserRed.png; sourceTree = "<group>"; };
-		75AA16581E57953900C601EC /* laserRedShot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = laserRedShot.png; sourceTree = "<group>"; };
-		75AA16591E57953900C601EC /* life.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = life.png; sourceTree = "<group>"; };
-		75AA165A1E57953900C601EC /* meteorBig.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = meteorBig.png; sourceTree = "<group>"; };
-		75AA165B1E57953900C601EC /* meteorSmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = meteorSmall.png; sourceTree = "<group>"; };
-		75AA165C1E57953900C601EC /* player.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = player.png; sourceTree = "<group>"; };
-		75AA165D1E57953900C601EC /* playerDamaged.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playerDamaged.png; sourceTree = "<group>"; };
-		75AA165E1E57953900C601EC /* playerLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playerLeft.png; sourceTree = "<group>"; };
-		75AA165F1E57953900C601EC /* playerRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playerRight.png; sourceTree = "<group>"; };
-		75AA16601E57953900C601EC /* shield.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shield.png; sourceTree = "<group>"; };
-		75AA166F1E57954400C601EC /* Background */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Background; sourceTree = "<group>"; };
+		75CA22321E5D4DFC00BD4E73 /* Parts.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Parts.xcassets; sourceTree = "<group>"; };
+		75CB19681E5CD79F001C9444 /* Enemies.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Enemies.xcassets; path = ../Enemies.xcassets; sourceTree = "<group>"; };
+		75CB196A1E5CD7BA001C9444 /* Lasers.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Lasers.xcassets; sourceTree = "<group>"; };
+		75CB196C1E5CD7EB001C9444 /* UI.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = UI.xcassets; sourceTree = "<group>"; };
+		75CB196E1E5CD81F001C9444 /* PlayerShip.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = PlayerShip.xcassets; sourceTree = "<group>"; };
+		75CB19701E5CD835001C9444 /* Background.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Background.xcassets; sourceTree = "<group>"; };
+		75CB19721E5CD86E001C9444 /* Effects.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Effects.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,23 +120,15 @@
 				7520E59C1E578E44009BF4D4 /* GameViewController.swift */,
 				7520E59E1E578E44009BF4D4 /* Main.storyboard */,
 				7520E5A11E578E44009BF4D4 /* Assets.xcassets */,
+				75CB19721E5CD86E001C9444 /* Effects.xcassets */,
+				75CB19681E5CD79F001C9444 /* Enemies.xcassets */,
+				75CB196E1E5CD81F001C9444 /* PlayerShip.xcassets */,
+				75CB196A1E5CD7BA001C9444 /* Lasers.xcassets */,
+				75CB19701E5CD835001C9444 /* Background.xcassets */,
+				75CA22321E5D4DFC00BD4E73 /* Parts.xcassets */,
+				75CB196C1E5CD7EB001C9444 /* UI.xcassets */,
 				7520E5A31E578E44009BF4D4 /* LaunchScreen.storyboard */,
 				7520E5A61E578E44009BF4D4 /* Info.plist */,
-				75AA16531E57953900C601EC /* enemyShip.png */,
-				75AA16541E57953900C601EC /* enemyUFO.png */,
-				75AA16551E57953900C601EC /* laserGreen.png */,
-				75AA16561E57953900C601EC /* laserGreenShot.png */,
-				75AA16571E57953900C601EC /* laserRed.png */,
-				75AA16581E57953900C601EC /* laserRedShot.png */,
-				75AA16591E57953900C601EC /* life.png */,
-				75AA165A1E57953900C601EC /* meteorBig.png */,
-				75AA166F1E57954400C601EC /* Background */,
-				75AA165B1E57953900C601EC /* meteorSmall.png */,
-				75AA165C1E57953900C601EC /* player.png */,
-				75AA165D1E57953900C601EC /* playerDamaged.png */,
-				75AA165E1E57953900C601EC /* playerLeft.png */,
-				75AA165F1E57953900C601EC /* playerRight.png */,
-				75AA16601E57953900C601EC /* shield.png */,
 				758F38271E5AA19E00F9E8CB /* enemyShipExplode.sks */,
 			);
 			path = spaceGame;
@@ -286,25 +262,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75CB196F1E5CD81F001C9444 /* PlayerShip.xcassets in Resources */,
 				7520E5A01E578E44009BF4D4 /* Main.storyboard in Resources */,
-				75AA16681E57953900C601EC /* meteorBig.png in Resources */,
 				758F38281E5AA19E00F9E8CB /* enemyShipExplode.sks in Resources */,
-				75AA16631E57953900C601EC /* laserGreen.png in Resources */,
-				75AA16621E57953900C601EC /* enemyUFO.png in Resources */,
-				75AA166B1E57953900C601EC /* playerDamaged.png in Resources */,
-				75AA16651E57953900C601EC /* laserRed.png in Resources */,
+				75CB196D1E5CD7EB001C9444 /* UI.xcassets in Resources */,
 				7520E5A21E578E44009BF4D4 /* Assets.xcassets in Resources */,
-				75AA16661E57953900C601EC /* laserRedShot.png in Resources */,
-				75AA166E1E57953900C601EC /* shield.png in Resources */,
-				75AA166C1E57953900C601EC /* playerLeft.png in Resources */,
+				75CB19711E5CD835001C9444 /* Background.xcassets in Resources */,
+				75CB196B1E5CD7BA001C9444 /* Lasers.xcassets in Resources */,
 				7520E5A51E578E44009BF4D4 /* LaunchScreen.storyboard in Resources */,
-				75AA16691E57953900C601EC /* meteorSmall.png in Resources */,
-				75AA16641E57953900C601EC /* laserGreenShot.png in Resources */,
-				75AA166A1E57953900C601EC /* player.png in Resources */,
-				75AA16611E57953900C601EC /* enemyShip.png in Resources */,
-				75AA16671E57953900C601EC /* life.png in Resources */,
-				75AA16701E57954400C601EC /* Background in Resources */,
-				75AA166D1E57953900C601EC /* playerRight.png in Resources */,
+				75CA22331E5D4DFC00BD4E73 /* Parts.xcassets in Resources */,
+				75CB19731E5CD86E001C9444 /* Effects.xcassets in Resources */,
+				75CB19691E5CD79F001C9444 /* Enemies.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
