@@ -151,7 +151,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let nebulaY = self.frame.size.height + nebula.size.height / 2
         
         nebula.position = CGPoint(x: nebulaX, y: nebulaY)
-        nebula.zPosition = 10
+        nebula.zPosition = 5
         
         addChild(nebula)
         
@@ -166,7 +166,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let speed: Double = 20
         let ship = enemyShip(imageNamed: "enemyBlack3")
         ship.setScale(0.5)
-        ship.zPosition = 2
+        ship.zPosition = 1
         let shipY = self.frame.size.height + ship.size.height/2
         let shipX = random(min: ship.size.width/2, max: self.frame.size.width - ship.size.width/2)
         
@@ -179,7 +179,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let afterburner = SKSpriteNode(imageNamed: "fire06")
         afterburner.setScale(1.5)
         afterburner.position = CGPoint(x: 0, y: ship.frame.size.height + afterburner.size.height/2.0)
-        afterburner.zPosition = 1
+        afterburner.zPosition = 0
         ship.addChild(afterburner)
         
         ship.physicsBody?.collisionBitMask = playerLaserCategory
@@ -291,8 +291,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func updateScore(){
         let charInt1 : Int = Int(score / 100)
-        let charInt2: Int = Int((score - char1*100) / 10)
-        let charInt3: Int = Int(score - char1 * 100 - char2 * 10)
+        let charInt2: Int = Int((score - charInt1*100) / 10)
+        let charInt3: Int = Int(score - charInt1 * 100 - charInt2 * 10)
         putToScoreBoard(scoreChar: String(charInt1), charNode: char1)
         putToScoreBoard(scoreChar: String(charInt2), charNode: char2)
         putToScoreBoard(scoreChar: String(charInt3), charNode: char3)
@@ -311,7 +311,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         char3.position = CGPoint(x: self.frame.width - charSizeWidth, y: self.frame.height - charSizeHeight)
         char2.position = CGPoint(x: self.frame.width - charSizeWidth*2.1, y: self.frame.height - charSizeHeight)
         char1.position = CGPoint(x: self.frame.width - charSizeWidth*3.1, y: self.frame.height - charSizeHeight)
-        
+        char1.zPosition = 10
+        char2.zPosition = 10
+        char3.zPosition = 10
         addChild(char1)
         addChild(char2)
         addChild(char3)
@@ -450,7 +452,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.backgroundColor = UIColor.black
         player.setScale(0.5)
-        player.zPosition = 3
+        player.zPosition = 2
         player.position = CGPoint(x: self.frame.size.width * 0.5, y: player.size.height * 1.5)
         addChild(player)
         
