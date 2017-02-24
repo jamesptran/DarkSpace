@@ -242,9 +242,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         // Delete enemyShips that are hit by laser and add Score
-        for enemyShip in enemyShipsHitByLaser  {
-            score += 1
-            enemyShip.removeFromParent()
+        var ship: enemyShip = enemyShip()
+        while (enemyShipsHitByLaser.count > 0)  {
+            ship = enemyShipsHitByLaser.removeFirst()
+            if (ship.parent != nil){
+                score += 1
+                updateScore()
+            }
         }
     }
     
@@ -339,27 +343,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if ((((firstBody.physicsBody?.categoryBitMask)! & playerLaserCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & enemyShipCategory) != 0))
         {
-            if !(enemyShipsHitByLaser.contains(secondBody as! enemyShip)){
-                enemyShipsHitByLaser.append(secondBody as! enemyShip )
-            }
+            
             if ((secondBody as! enemyShip).life == 1){
-                if (secondBody.parent != nil){
-                    score += 1
-                    updateScore()
+                if !(enemyShipsHitByLaser.contains(secondBody as! enemyShip)){
+                    enemyShipsHitByLaser.append(secondBody as! enemyShip )
                     let actionFade = SKAction.fadeOut(withDuration: 0.1)
                     let actionDone = SKAction.removeFromParent()
                     
-                    playerLaserExplode(x: (firstBody.position.x), y: (firstBody.position.y))
-                    
-                    firstBody.removeFromParent()
                     secondBody.run(SKAction.sequence([actionFade, actionDone]))
                 }
             } else {
                 (secondBody as! enemyShip).life -= 1
-                playerLaserExplode(x: (firstBody.position.x), y: (firstBody.position.y))
-                firstBody.removeFromParent()
-
             }
+            playerLaserExplode(x: (firstBody.position.x), y: (firstBody.position.y))
+            firstBody.removeFromParent()
+
         }
         else if ((((firstBody.physicsBody?.categoryBitMask)! & playerLaserCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & roofCategory) != 0)){
             firstBody.removeFromParent()
