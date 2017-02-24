@@ -9,7 +9,13 @@
 import SpriteKit
 import GameplayKit
 
-
+let playerLaserCategory:UInt32 =  0x1 << 1
+let enemyShipCategory:UInt32 =  0x1 << 2
+let floorCategory:UInt32 = 0x1 << 3
+let roofCategory:UInt32 = 0x1 << 4
+let playerCategory:UInt32 = 0x1 << 5
+let playerShieldCategory:UInt32 = 0x1 << 6
+let enemyLaserCategory:UInt32 = 0x1 << 7
 
 
 func + (left: CGPoint, right: CGPoint) -> CGPoint {
@@ -41,25 +47,49 @@ extension CGPoint {
 
 
 class enemyShip: SKSpriteNode {
-    var life = 2
+    var hp = 2
+}
+
+class playerShip: SKSpriteNode {
+    var life = 3
+    func loseALife(){
+        life -= 1
+        if (life == 0){
+            exit(0)
+            // This is where Game Over scene appears
+            //let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+            //let gameOverScene = GameOverScene(size: self.size, won: false)
+            //self.view?.presentScene(gameOverScene, transition: reveal)
+        } else {
+            let FadeOut = SKAction.fadeAlpha(to: 0, duration: 0.3)
+            let FadeIn = SKAction.fadeAlpha(to: 0.5, duration: 0.3)
+            
+            let Flicker = SKAction.sequence([FadeOut, FadeIn])
+            let Appear = SKAction.fadeIn(withDuration: 0)
+            self.run(SKAction.sequence([SKAction.run(invulnerable), Flicker, Flicker, Flicker, Appear, SKAction.run(vulnerable)]))
+        }
+    }
+    
+    func invulnerable(){
+        self.physicsBody?.contactTestBitMask = 0
+    }
+    
+    func vulnerable(){
+        self.physicsBody?.contactTestBitMask = enemyLaserCategory
+    }
+    
 }
 
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    let player = SKSpriteNode(imageNamed: "player")
+    let player = playerShip(imageNamed: "player")
     let playerShield = SKSpriteNode(imageNamed: "shield2")
-    let char1 = SKSpriteNode(imageNamed: "numeral0")
-    let char2 = SKSpriteNode(imageNamed: "numeral0")
-    let char3 = SKSpriteNode(imageNamed: "numeral0")
+    let score1 = SKSpriteNode(imageNamed: "numeral0")
+    let score2 = SKSpriteNode(imageNamed: "numeral0")
+    let score3 = SKSpriteNode(imageNamed: "numeral0")
+    let playerLifeNum = SKSpriteNode(imageNamed: "numeral0")
     var shield = true
     
-    let playerLaserCategory:UInt32 =  0x1 << 1
-    let enemyShipCategory:UInt32 =  0x1 << 2
-    let floorCategory:UInt32 = 0x1 << 3
-    let roofCategory:UInt32 = 0x1 << 4
-    let playerCategory:UInt32 = 0x1 << 5
-    let playerShieldCategory:UInt32 = 0x1 << 6
-    let enemyLaserCategory:UInt32 = 0x1 << 7
     
     var restartButton : UIButton!
     var score : Int = 0
@@ -75,7 +105,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.contactDelegate = self
     }
     
-    
     func random() -> Float {
         return (Float(arc4random()) / 0xFFFFFFFF)
     }
@@ -90,6 +119,299 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let max = mid + range
         let min = mid - range
         return random() * (max - min) + min
+    }
+
+    
+    var right = false
+    var left = false
+    override func update(_ currentTime: TimeInterval) {
+        // Update player's position looking at touchLocationX
+        let playerSpeed : Int = 200
+        
+        if (player.position.x < touchLocationX! - 5){
+            if (!right){
+                player.physicsBody?.velocity = CGVector(dx: playerSpeed, dy: 0)
+                player.texture = SKTexture(imageNamed:"playerRight")
+                playerShield.physicsBody?.velocity = CGVector(dx: playerSpeed, dy: 0)
+                right = true
+                left = false
+            }
+        } else if (player.position.x > touchLocationX! + 5){
+            if (!left){
+                player.physicsBody?.velocity = CGVector(dx: -playerSpeed, dy: 0)
+                player.texture = SKTexture(imageNamed:"playerLeft")
+                playerShield.physicsBody?.velocity = CGVector(dx: -playerSpeed, dy: 0)
+                left = true
+                right = false
+            }
+        } else {
+            if (right || left){
+                right = false
+                left = false
+                player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+                player.texture = SKTexture(imageNamed: "player")
+                playerShield.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+            }
+        }
+    }
+    
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        var firstBody,secondBody : SKSpriteNode
+        if (contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask)
+        {
+            firstBody = contact.bodyA.node as! SKSpriteNode
+            secondBody = contact.bodyB.node as! SKSpriteNode
+        }
+        else
+        {
+            firstBody = contact.bodyB.node as! SKSpriteNode
+            secondBody = contact.bodyA.node as! SKSpriteNode
+        }
+        
+        if ((((firstBody.physicsBody?.categoryBitMask)! & playerLaserCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & enemyShipCategory) != 0))
+        {
+            
+            if ((secondBody as! enemyShip).hp == 1){
+                score += 1
+                updateScore()
+                (secondBody as! enemyShip).hp -= 1
+                let actionFade = SKAction.fadeOut(withDuration: 0.1)
+                let actionDone = SKAction.removeFromParent()
+                
+                secondBody.run(SKAction.sequence([actionFade, actionDone]))
+            } else {
+                (secondBody as! enemyShip).hp -= 1
+            }
+            playerLaserExplode(x: (firstBody.position.x), y: (firstBody.position.y))
+            firstBody.removeFromParent()
+            
+        }
+        else if ((((firstBody.physicsBody?.categoryBitMask)! & playerLaserCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & roofCategory) != 0)){
+            firstBody.removeFromParent()
+        }
+            
+        else if ((((firstBody.physicsBody?.categoryBitMask)! & enemyShipCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & floorCategory) != 0)){
+            firstBody.removeFromParent()
+        }
+            
+        else if ((((firstBody.physicsBody?.categoryBitMask)! & floorCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & enemyLaserCategory) != 0)){
+            secondBody.removeFromParent()
+        }
+        else if ((((firstBody.physicsBody?.categoryBitMask)! & playerShieldCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & enemyLaserCategory) != 0)){
+            if (shield){
+                shield = false
+                firstBody.isHidden = true
+                firstBody.physicsBody?.contactTestBitMask = 0
+                player.physicsBody?.contactTestBitMask = enemyLaserCategory
+                secondBody.removeFromParent()
+            }
+        }
+        else if ((((firstBody.physicsBody?.categoryBitMask)! & playerCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & enemyLaserCategory) != 0)){
+            if (!shield){
+                (firstBody as! playerShip).loseALife()
+                secondBody.removeFromParent()
+                updatePlayerLives()
+            } else {
+                secondBody.removeFromParent()
+            }
+        }
+    }
+    
+    
+    func addEnemyShip(){
+        let speed: Double = 20
+        let ship = enemyShip(imageNamed: "enemyBlack3")
+        ship.setScale(0.5)
+        ship.zPosition = 1
+        let shipY = self.frame.size.height + ship.size.height/2
+        let shipX = random(min: ship.size.width/2, max: self.frame.size.width - ship.size.width/2)
+        
+        ship.position = CGPoint(x: shipX, y: shipY)
+        
+        addChild(ship)
+        ship.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: ship.size.width,
+                                                             height: ship.size.height))
+        
+        let afterburner = SKSpriteNode(imageNamed: "fire06")
+        afterburner.setScale(1.5)
+        afterburner.position = CGPoint(x: 0, y: ship.frame.size.height + afterburner.size.height/2.0)
+        afterburner.zPosition = 0
+        ship.addChild(afterburner)
+        
+        ship.physicsBody?.collisionBitMask = 0
+        ship.physicsBody?.categoryBitMask = enemyShipCategory
+        ship.physicsBody?.contactTestBitMask = playerLaserCategory
+        ship.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: -speed))
+        ship.physicsBody?.mass = 70
+        ship.physicsBody?.linearDamping = 0
+        
+        
+        addEnemyLaser(ship: ship)
+    }
+    
+    
+    func addEnemyLaser(ship: SKSpriteNode){
+        let laser = SKSpriteNode(imageNamed: "laserRed14")
+        laser.setScale(0.5)
+        laser.position = ship.position
+        laser.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: laser.size.width, height: laser.size.height))
+        laser.physicsBody?.categoryBitMask = enemyLaserCategory
+        laser.physicsBody?.collisionBitMask = 0
+        laser.physicsBody?.contactTestBitMask = floorCategory
+        addChild(laser)
+        laser.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -3.0))
+        laser.physicsBody?.linearDamping = 0
+     }
+    
+    
+    func addPlayerLaserPosition(laserX: CGFloat, laserY: CGFloat) -> SKSpriteNode{
+        let laser = SKSpriteNode(imageNamed: "laserBlue06")
+        laser.setScale(0.5)
+        let speed: Double = 1.5
+        laser.zPosition = 2
+        laser.position = CGPoint(x: laserX, y: laserY)
+        
+        laser.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: laser.size.width,
+                                                              height: laser.size.height))
+        laser.physicsBody?.categoryBitMask = playerLaserCategory
+        laser.physicsBody?.contactTestBitMask = enemyShipCategory
+        laser.physicsBody?.collisionBitMask = 0
+        laser.physicsBody?.linearDamping = 0
+        addChild(laser)
+        laser.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: speed))
+        return(laser)
+    }
+    
+    
+    func addPlayerLaser(){
+        let speed: Double = 1.5
+        let xLaserLeft = player.position.x - player.size.width/2
+        let xLaserRight = player.position.x + player.size.width/2
+        let yLaser = player.position.y
+        
+        let laserLeft = addPlayerLaserPosition(laserX: xLaserLeft, laserY: yLaser)
+        let laserRight = addPlayerLaserPosition(laserX: xLaserRight, laserY: yLaser)
+        laserLeft.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: speed))
+        laserRight.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: speed))
+    }
+    
+    
+    func playerLaserExplode(x: CGFloat, y: CGFloat){
+        let shot = SKSpriteNode(imageNamed: "laserBlue10")
+        shot.setScale(0.5)
+        shot.position = CGPoint(x: x, y: y)
+        addChild(shot)
+        let actionFade = SKAction.fadeOut(withDuration: 0.4)
+        let actionDone = SKAction.removeFromParent()
+        shot.run(SKAction.sequence([actionFade, actionDone]))
+    }
+
+    func updateScore(){
+        let charInt1 : Int = Int(score / 100)
+        let charInt2: Int = Int((score - charInt1*100) / 10)
+        let charInt3: Int = Int(score - charInt1 * 100 - charInt2 * 10)
+        putNumToNode(scoreChar: String(charInt1), charNode: score1)
+        putNumToNode(scoreChar: String(charInt2), charNode: score2)
+        putNumToNode(scoreChar: String(charInt3), charNode: score3)
+    }
+    
+    //scoreChar needs to be less than 10
+    func putNumToNode(scoreChar: String, charNode: SKSpriteNode){
+        let fileName = "numeral" + scoreChar
+        charNode.texture = SKTexture(imageNamed: fileName)
+    }
+    
+    
+    func addScoreBoard(){
+        let charSizeWidth = score3.size.width
+        let charSizeHeight = score3.size.height
+        score3.position = CGPoint(x: self.frame.width - charSizeWidth, y: self.frame.height - charSizeHeight)
+        score2.position = CGPoint(x: self.frame.width - charSizeWidth*2.1, y: self.frame.height - charSizeHeight)
+        score1.position = CGPoint(x: self.frame.width - charSizeWidth*3.2, y: self.frame.height - charSizeHeight)
+        score1.zPosition = 10
+        score2.zPosition = 10
+        score3.zPosition = 10
+        addChild(score1)
+        addChild(score2)
+        addChild(score3)
+    }
+
+    
+    func updatePlayerLives(){
+        putNumToNode(scoreChar: String(player.life), charNode: playerLifeNum)
+    }
+    
+    
+    func addPlayerLivesBoard(){
+        let playerMiniImage = SKSpriteNode(imageNamed:"playerLife1_red")
+        let multiplySymbol = SKSpriteNode(imageNamed: "numeralX")
+        
+        let charSizeWidth = playerMiniImage.size.width
+        let charSizeHeight = playerMiniImage.size.height
+        
+        updatePlayerLives()
+        
+        playerMiniImage.position = CGPoint(x: charSizeWidth, y: self.frame.height - charSizeHeight)
+        multiplySymbol.position = CGPoint(x: charSizeWidth*2, y: self.frame.height - charSizeHeight)
+        playerLifeNum.position = CGPoint(x: charSizeWidth*3, y: self.frame.height - charSizeHeight)
+        
+        playerMiniImage.zPosition = 10
+        multiplySymbol.zPosition = 10
+        playerLifeNum.zPosition = 10
+        addChild(playerMiniImage)
+        addChild(multiplySymbol)
+        addChild(playerLifeNum)
+    }
+    
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else {
+            return
+        }
+        
+        let touchLocation = touch.location(in: self)
+        touchLocationX = touchLocation.x
+    }
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else {
+            return
+        }
+        
+        let touchLocation = touch.location(in: self)
+        touchLocationX = touchLocation.x
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+
+        player.texture = SKTexture(imageNamed:"player")
+        touchLocationX = player.position.x
+    }
+    
+    
+    func addPlayerItems(){
+        let engine = SKSpriteNode(imageNamed: "engine3")
+        let gunRight = SKSpriteNode(imageNamed: "gun02")
+        let gunLeft = SKSpriteNode(imageNamed: "gun02")
+        let afterburner = SKSpriteNode(imageNamed: "fire16")
+        engine.setScale(0.5)
+        engine.position = CGPoint(x: 0, y: -player.size.height - engine.size.height/2)
+        
+        gunRight.position = CGPoint(x: player.size.width, y: 0)
+        gunLeft.position = CGPoint(x: -player.size.width, y: 0 )
+        
+        gunRight.zPosition = -1
+        gunLeft.zPosition = -1
+        
+        
+        afterburner.position = CGPoint(x: 0, y: -player.size.height - engine.size.height/2 - afterburner.size.height/2)
+        
+        player.addChild(engine)
+        player.addChild(gunRight)
+        player.addChild(gunLeft)
+        player.addChild(afterburner)
     }
     
     
@@ -163,271 +485,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
-    func addEnemyShip(){
-        let speed: Double = 20
-        let ship = enemyShip(imageNamed: "enemyBlack3")
-        ship.setScale(0.5)
-        ship.zPosition = 1
-        let shipY = self.frame.size.height + ship.size.height/2
-        let shipX = random(min: ship.size.width/2, max: self.frame.size.width - ship.size.width/2)
-        
-        ship.position = CGPoint(x: shipX, y: shipY)
-        
-        addChild(ship)
-        ship.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: ship.size.width,
-                                                             height: ship.size.height))
-        
-        let afterburner = SKSpriteNode(imageNamed: "fire06")
-        afterburner.setScale(1.5)
-        afterburner.position = CGPoint(x: 0, y: ship.frame.size.height + afterburner.size.height/2.0)
-        afterburner.zPosition = 0
-        ship.addChild(afterburner)
-        
-        ship.physicsBody?.collisionBitMask = 0
-        ship.physicsBody?.categoryBitMask = enemyShipCategory
-        ship.physicsBody?.contactTestBitMask = playerLaserCategory
-        ship.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: -speed))
-        ship.physicsBody?.mass = 70
-        ship.physicsBody?.linearDamping = 0
-        
-        
-        addEnemyLaser(ship: ship)
-    }
-    
-    
-    func addEnemyLaser(ship: SKSpriteNode){
-        let laser = SKSpriteNode(imageNamed: "laserRed14")
-        laser.setScale(0.5)
-        laser.position = ship.position
-        laser.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: laser.size.width, height: laser.size.height))
-        laser.physicsBody?.categoryBitMask = enemyLaserCategory
-        laser.physicsBody?.collisionBitMask = 0
-        laser.physicsBody?.contactTestBitMask = floorCategory
-        addChild(laser)
-        laser.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -3.0))
-        laser.physicsBody?.linearDamping = 0
-     }
-    
-    
-    var right = false
-    var left = false
-    override func update(_ currentTime: TimeInterval) {
-        // Update player's position looking at touchLocationX
-        let playerSpeed : Int = 200
-        
-        if (player.position.x < touchLocationX! - 5){
-            if (!right){
-                player.physicsBody?.velocity = CGVector(dx: playerSpeed, dy: 0)
-                player.texture = SKTexture(imageNamed:"playerRight")
-                playerShield.physicsBody?.velocity = CGVector(dx: playerSpeed, dy: 0)
-                right = true
-                left = false
-            }
-        } else if (player.position.x > touchLocationX! + 5){
-            if (!left){
-                player.physicsBody?.velocity = CGVector(dx: -playerSpeed, dy: 0)
-                player.texture = SKTexture(imageNamed:"playerLeft")
-                playerShield.physicsBody?.velocity = CGVector(dx: -playerSpeed, dy: 0)
-                left = true
-                right = false
-            }
-        } else {
-            if (right || left){
-                right = false
-                left = false
-                player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-                player.texture = SKTexture(imageNamed: "player")
-                playerShield.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-            }
-        }
-    }
-    
-    
-    func addPlayerLaserPosition(laserX: CGFloat, laserY: CGFloat) -> SKSpriteNode{
-        let laser = SKSpriteNode(imageNamed: "laserBlue06")
-        laser.setScale(0.5)
-        let speed: Double = 1.5
-        laser.zPosition = 2
-        laser.position = CGPoint(x: laserX, y: laserY)
-        
-        laser.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: laser.size.width,
-                                                              height: laser.size.height))
-        laser.physicsBody?.categoryBitMask = playerLaserCategory
-        laser.physicsBody?.contactTestBitMask = enemyShipCategory
-        laser.physicsBody?.collisionBitMask = 0
-        laser.physicsBody?.linearDamping = 0
-        addChild(laser)
-        laser.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: speed))
-        return(laser)
-    }
-    
-    
-    func addPlayerLaser(){
-        let speed: Double = 1.5
-        let xLaserLeft = player.position.x - player.size.width/2
-        let xLaserRight = player.position.x + player.size.width/2
-        let yLaser = player.position.y
-        
-        let laserLeft = addPlayerLaserPosition(laserX: xLaserLeft, laserY: yLaser)
-        let laserRight = addPlayerLaserPosition(laserX: xLaserRight, laserY: yLaser)
-        laserLeft.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: speed))
-        laserRight.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: speed))
-
-        
-    }
-    
-    
-    func playerLaserExplode(x: CGFloat, y: CGFloat){
-        let shot = SKSpriteNode(imageNamed: "laserBlue10")
-        shot.setScale(0.5)
-        shot.position = CGPoint(x: x, y: y)
-        addChild(shot)
-        let actionFade = SKAction.fadeOut(withDuration: 0.4)
-        let actionDone = SKAction.removeFromParent()
-        shot.run(SKAction.sequence([actionFade, actionDone]))
-    }
-
-    func updateScore(){
-        let charInt1 : Int = Int(score / 100)
-        let charInt2: Int = Int((score - charInt1*100) / 10)
-        let charInt3: Int = Int(score - charInt1 * 100 - charInt2 * 10)
-        putToScoreBoard(scoreChar: String(charInt1), charNode: char1)
-        putToScoreBoard(scoreChar: String(charInt2), charNode: char2)
-        putToScoreBoard(scoreChar: String(charInt3), charNode: char3)
-    }
-    
-    //scoreChar needs to be less than 10
-    func putToScoreBoard(scoreChar: String, charNode: SKSpriteNode){
-        let fileName = "numeral" + scoreChar
-        charNode.texture = SKTexture(imageNamed: fileName)
-    }
-    
-    
-    func addScoreBoard(){
-        let charSizeWidth = char3.size.width
-        let charSizeHeight = char3.size.height
-        char3.position = CGPoint(x: self.frame.width - charSizeWidth, y: self.frame.height - charSizeHeight)
-        char2.position = CGPoint(x: self.frame.width - charSizeWidth*2.1, y: self.frame.height - charSizeHeight)
-        char1.position = CGPoint(x: self.frame.width - charSizeWidth*3.1, y: self.frame.height - charSizeHeight)
-        char1.zPosition = 10
-        char2.zPosition = 10
-        char3.zPosition = 10
-        addChild(char1)
-        addChild(char2)
-        addChild(char3)
-    }
-    
-    
-    func didBegin(_ contact: SKPhysicsContact) {
-        var firstBody,secondBody : SKSpriteNode
-        if (contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask)
-        {
-            firstBody = contact.bodyA.node as! SKSpriteNode
-            secondBody = contact.bodyB.node as! SKSpriteNode
-        }
-        else
-        {
-            firstBody = contact.bodyB.node as! SKSpriteNode
-            secondBody = contact.bodyA.node as! SKSpriteNode
-        }
-        
-        if ((((firstBody.physicsBody?.categoryBitMask)! & playerLaserCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & enemyShipCategory) != 0))
-        {
-            
-            if ((secondBody as! enemyShip).life == 1){
-                score += 1
-                updateScore()
-                (secondBody as! enemyShip).life -= 1
-                let actionFade = SKAction.fadeOut(withDuration: 0.1)
-                let actionDone = SKAction.removeFromParent()
-                
-                secondBody.run(SKAction.sequence([actionFade, actionDone]))
-            } else {
-                (secondBody as! enemyShip).life -= 1
-            }
-            playerLaserExplode(x: (firstBody.position.x), y: (firstBody.position.y))
-            firstBody.removeFromParent()
-
-        }
-        else if ((((firstBody.physicsBody?.categoryBitMask)! & playerLaserCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & roofCategory) != 0)){
-            firstBody.removeFromParent()
-        }
-        
-        else if ((((firstBody.physicsBody?.categoryBitMask)! & enemyShipCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & floorCategory) != 0)){
-            firstBody.removeFromParent()
-        }
-        
-        else if ((((firstBody.physicsBody?.categoryBitMask)! & floorCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & enemyLaserCategory) != 0)){
-            secondBody.removeFromParent()
-        }
-        else if ((((firstBody.physicsBody?.categoryBitMask)! & playerShieldCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & enemyLaserCategory) != 0)){
-            if (shield){
-                shield = false
-                firstBody.isHidden = true
-                player.physicsBody?.contactTestBitMask = enemyLaserCategory
-                secondBody.removeFromParent()
-            }
-        }
-        else if ((((firstBody.physicsBody?.categoryBitMask)! & playerCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & enemyLaserCategory) != 0)){
-            if (!shield){
-                firstBody.removeFromParent()
-                secondBody.removeFromParent()
-            } else {
-                secondBody.removeFromParent()
-            }
-        }
-    }
-
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else {
-            return
-        }
-        
-        let touchLocation = touch.location(in: self)
-        touchLocationX = touchLocation.x
-    }
-    
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else {
-            return
-        }
-        
-        let touchLocation = touch.location(in: self)
-        touchLocationX = touchLocation.x
-    }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-
-        player.texture = SKTexture(imageNamed:"player")
-        touchLocationX = player.position.x
-    }
-    
-    
-    func addPlayerItems(){
-        let engine = SKSpriteNode(imageNamed: "engine3")
-        let gunRight = SKSpriteNode(imageNamed: "gun02")
-        let gunLeft = SKSpriteNode(imageNamed: "gun02")
-        let afterburner = SKSpriteNode(imageNamed: "fire16")
-        engine.setScale(0.5)
-        engine.position = CGPoint(x: 0, y: -player.size.height - engine.size.height/2)
-        
-        gunRight.position = CGPoint(x: player.size.width, y: 0)
-        gunLeft.position = CGPoint(x: -player.size.width, y: 0 )
-        
-        gunRight.zPosition = -1
-        gunLeft.zPosition = -1
-        
-        
-        afterburner.position = CGPoint(x: 0, y: -player.size.height - engine.size.height/2 - afterburner.size.height/2)
-        
-        player.addChild(engine)
-        player.addChild(gunRight)
-        player.addChild(gunLeft)
-        player.addChild(afterburner)
-    }
-    
     var shieldCount = 0
     func resetShield(){
         if (!shield){
@@ -439,12 +496,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playerShield.isHidden = false
             shieldCount = 0
             player.physicsBody?.contactTestBitMask = 0
+            playerShield.physicsBody?.contactTestBitMask = enemyLaserCategory
         }
     }
     
     
     override func didMove(to view: SKView) {
         addScoreBoard()
+        addPlayerLivesBoard()
         
         self.backgroundColor = UIColor.black
         player.setScale(0.5)
