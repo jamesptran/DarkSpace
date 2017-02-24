@@ -240,16 +240,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 playerShield.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
             }
         }
-        
-        // Delete enemyShips that are hit by laser and add Score
-        var ship: enemyShip = enemyShip()
-        while (enemyShipsHitByLaser.count > 0)  {
-            ship = enemyShipsHitByLaser.removeFirst()
-            if (ship.parent != nil){
-                score += 1
-                updateScore()
-            }
-        }
     }
     
     
@@ -345,13 +335,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             
             if ((secondBody as! enemyShip).life == 1){
-                if !(enemyShipsHitByLaser.contains(secondBody as! enemyShip)){
-                    enemyShipsHitByLaser.append(secondBody as! enemyShip )
-                    let actionFade = SKAction.fadeOut(withDuration: 0.1)
-                    let actionDone = SKAction.removeFromParent()
-                    
-                    secondBody.run(SKAction.sequence([actionFade, actionDone]))
-                }
+                score += 1
+                updateScore()
+                (secondBody as! enemyShip).life -= 1
+                let actionFade = SKAction.fadeOut(withDuration: 0.1)
+                let actionDone = SKAction.removeFromParent()
+                
+                secondBody.run(SKAction.sequence([actionFade, actionDone]))
             } else {
                 (secondBody as! enemyShip).life -= 1
             }
