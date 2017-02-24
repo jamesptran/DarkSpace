@@ -42,7 +42,6 @@ extension CGPoint {
 
 class enemyShip: SKSpriteNode {
     var life = 2
-    
 }
 
 
@@ -67,6 +66,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     
     var touchLocationX: CGFloat? = nil
+    var enemyShipsHitByLaser : [enemyShip] = [enemyShip]()
+    
     
     override func sceneDidLoad() {
         super.sceneDidLoad()
@@ -145,7 +146,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func addNebula(){
         let nebula = SKSpriteNode(imageNamed:"nebula")
-        nebula.setScale(0.5)
+        nebula.setScale(0.8)
         let speed = 50
         let nebulaX = random(min: nebula.size.width / 2, max: self.frame.size.width - nebula.size.width / 2)
         let nebulaY = self.frame.size.height + nebula.size.height / 2
@@ -182,7 +183,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         afterburner.zPosition = 0
         ship.addChild(afterburner)
         
-        ship.physicsBody?.collisionBitMask = playerLaserCategory
+        ship.physicsBody?.collisionBitMask = 0
         ship.physicsBody?.categoryBitMask = enemyShipCategory
         ship.physicsBody?.contactTestBitMask = playerLaserCategory
         ship.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: -speed))
@@ -205,16 +206,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(laser)
         laser.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -3.0))
         laser.physicsBody?.linearDamping = 0
-        //let actualDuration = 5
-        //let actionMove = SKAction.move(to: CGPoint(x: ship.position.x, y: -laser.size.height/2), duration: TimeInterval(actualDuration))
-        //let actionDone = SKAction.removeFromParent()
-        
      }
     
     
     var right = false
     var left = false
     override func update(_ currentTime: TimeInterval) {
+        // Update player's position looking at touchLocationX
         let playerSpeed : Int = 200
         
         if (player.position.x < touchLocationX! - 5){
@@ -242,6 +240,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 playerShield.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
             }
         }
+        
+        // Delete enemyShips that are hit by laser and add Score
+        for enemyShip in enemyShipsHitByLaser  {
+            score += 1
+            enemyShip.removeFromParent()
+        }
     }
     
     
@@ -257,7 +261,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         laser.physicsBody?.categoryBitMask = playerLaserCategory
         laser.physicsBody?.contactTestBitMask = enemyShipCategory
         laser.physicsBody?.collisionBitMask = 0
-        laser.physicsBody?.friction = 0
+        laser.physicsBody?.linearDamping = 0
         addChild(laser)
         laser.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: speed))
         return(laser)
@@ -335,16 +339,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if ((((firstBody.physicsBody?.categoryBitMask)! & playerLaserCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & enemyShipCategory) != 0))
         {
+            if !(enemyShipsHitByLaser.contains(secondBody as! enemyShip)){
+                enemyShipsHitByLaser.append(secondBody as! enemyShip )
+            }
             if ((secondBody as! enemyShip).life == 1){
-                score += 1
-                updateScore()
-                let actionFade = SKAction.fadeOut(withDuration: 0.1)
-                let actionDone = SKAction.removeFromParent()
-            
-                playerLaserExplode(x: (firstBody.position.x), y: (firstBody.position.y))
-            
-                firstBody.removeFromParent()
-                secondBody.run(SKAction.sequence([actionFade, actionDone]))
+                if (secondBody.parent != nil){
+                    score += 1
+                    updateScore()
+                    let actionFade = SKAction.fadeOut(withDuration: 0.1)
+                    let actionDone = SKAction.removeFromParent()
+                    
+                    playerLaserExplode(x: (firstBody.position.x), y: (firstBody.position.y))
+                    
+                    firstBody.removeFromParent()
+                    secondBody.run(SKAction.sequence([actionFade, actionDone]))
+                }
             } else {
                 (secondBody as! enemyShip).life -= 1
                 playerLaserExplode(x: (firstBody.position.x), y: (firstBody.position.y))
@@ -379,9 +388,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 secondBody.removeFromParent()
             }
         }
-        
     }
-    
+
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else {
@@ -460,6 +468,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.physicsBody?.categoryBitMask = playerCategory
         player.physicsBody?.contactTestBitMask = 0
         player.physicsBody?.collisionBitMask = 0
+        player.physicsBody?.linearDamping = 0
         
         addPlayerItems()
 
@@ -470,6 +479,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         playerShield.physicsBody?.categoryBitMask = playerShieldCategory
         playerShield.physicsBody?.contactTestBitMask = enemyLaserCategory
         playerShield.physicsBody?.collisionBitMask = 0
+        playerShield.physicsBody?.linearDamping = 0
 
         touchLocationX = player.position.x
         
