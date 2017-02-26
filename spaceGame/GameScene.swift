@@ -17,7 +17,6 @@ let playerCategory:UInt32 = 0x1 << 5
 let playerShieldCategory:UInt32 = 0x1 << 6
 let enemyLaserCategory:UInt32 = 0x1 << 7
 
-
 func + (left: CGPoint, right: CGPoint) -> CGPoint {
     return CGPoint(x: left.x + right.x, y: left.y + right.y)
 }
@@ -55,20 +54,13 @@ class playerShip: SKSpriteNode {
     var life = 3
     func loseALife(){
         life -= 1
-        if (life == -1){
-            exit(0)
-            // This is where Game Over scene appears
-            //let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-            //let gameOverScene = GameOverScene(size: self.size, won: false)
-            //self.view?.presentScene(gameOverScene, transition: reveal)
-        } else {
-            let FadeOut = SKAction.fadeAlpha(to: 0, duration: 0.3)
-            let FadeIn = SKAction.fadeAlpha(to: 0.5, duration: 0.3)
+        
+        let FadeOut = SKAction.fadeAlpha(to: 0, duration: 0.3)
+        let FadeIn = SKAction.fadeAlpha(to: 0.5, duration: 0.3)
             
-            let Flicker = SKAction.sequence([FadeOut, FadeIn])
-            let Appear = SKAction.fadeIn(withDuration: 0)
-            self.run(SKAction.sequence([SKAction.run(invulnerable), Flicker, Flicker, Flicker, Appear, SKAction.run(vulnerable)]))
-        }
+        let Flicker = SKAction.sequence([FadeOut, FadeIn])
+        let Appear = SKAction.fadeIn(withDuration: 0)
+        self.run(SKAction.sequence([SKAction.run(invulnerable), Flicker, Flicker, Flicker, Appear, SKAction.run(vulnerable)]))
     }
     
     func invulnerable(){
@@ -78,7 +70,6 @@ class playerShip: SKSpriteNode {
     func vulnerable(){
         self.physicsBody?.contactTestBitMask = enemyLaserCategory
     }
-    
 }
 
 
@@ -91,12 +82,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let playerLifeNum = SKSpriteNode(imageNamed: "numeral0")
     var shield = true
     
+    let totalEnemyShipsCount = 50
+    var totalEnemyShipsRemoved = 0
     
     var restartButton : UIButton!
     var score : Int = 0
     var currentSystemTime : TimeInterval = 0.0
 
-    
     var touchLocationX: CGFloat? = nil
     
     
@@ -123,10 +115,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     
+    func showGameOverScene(){
+        let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+        let gameOverScene = GameOverScene(size: self.size)
+        gameOverScene.score = self.score
+        self.view?.presentScene(gameOverScene, transition: reveal)
+    }
+    
+    
     var right = false
     var left = false
     var timeOfLastLaser: TimeInterval = 0.0
     override func update(_ currentTime: TimeInterval) {
+        // Show Game Over view when player's life = -1 (dies when having 0 life left)
+        // Or when last ship is destroyed
+        if (player.life == -1) || (totalEnemyShipsRemoved >= totalEnemyShipsCount){
+            showGameOverScene()
+        }
+        
+        
         // Assign the currentSystemTime as currentTime to calculate spawn time
         currentSystemTime = currentTime
         
@@ -168,8 +175,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.addEnemyLaser(ship: (node as! enemyShip))
             }
         })
-        
-        
     }
     
     
@@ -188,13 +193,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if ((((firstBody.physicsBody?.categoryBitMask)! & playerLaserCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & enemyShipCategory) != 0))
         {
-            
             if ((secondBody as! enemyShip).hp == 1){
                 score += 1
                 updateScore()
                 (secondBody as! enemyShip).hp -= 1
-                let actionFade = SKAction.fadeOut(withDuration: 0.1)
-                let actionDone = SKAction.removeFromParent()
+                let actionFade = SKAction.fadeOut(withDuration: 0.2)
+                let actionDone = SKAction.run {
+                    secondBody.removeFromParent()
+                    self.totalEnemyShipsRemoved += 1
+                }
                 
                 secondBody.run(SKAction.sequence([actionFade, actionDone]))
             } else {
@@ -203,6 +210,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playerLaserExplode(x: (firstBody.position.x), y: (firstBody.position.y))
             firstBody.removeFromParent()
             
+            
         }
         else if ((((firstBody.physicsBody?.categoryBitMask)! & playerLaserCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & roofCategory) != 0)){
             firstBody.removeFromParent()
@@ -210,6 +218,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         else if ((((firstBody.physicsBody?.categoryBitMask)! & enemyShipCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & floorCategory) != 0)){
             firstBody.removeFromParent()
+            totalEnemyShipsRemoved += 1
         }
             
         else if ((((firstBody.physicsBody?.categoryBitMask)! & floorCategory) != 0) && (((secondBody.physicsBody?.categoryBitMask)! & enemyLaserCategory) != 0)){
@@ -229,8 +238,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 (firstBody as! playerShip).loseALife()
                 secondBody.removeFromParent()
                 updatePlayerLives()
-            } else {
-                secondBody.removeFromParent()
             }
         }
     }
@@ -286,7 +293,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Create a laser for each gun the player has
         self.player.enumerateChildNodes(withName: "playerGun", using: {
             (node: SKNode!, stop: UnsafeMutablePointer <ObjCBool>) -> Void in
-            let laser = SKSpriteNode(imageNamed: "laserBlue04")
+            let laser = SKSpriteNode(imageNamed: "laserBlue15")
             laser.setScale(0.5)
             let speed: Double = 5
             laser.zPosition = 2
@@ -373,6 +380,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
         guard let touch = touches.first else {
             return
         }
@@ -383,6 +391,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
         guard let touch = touches.first else {
             return
         }
@@ -392,7 +401,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-
+        super.touchesEnded(touches, with: event)
+        
         player.texture = SKTexture(imageNamed:"player")
         touchLocationX = player.position.x
     }
@@ -503,17 +513,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if (shieldCount >= 12){
+            player.physicsBody?.contactTestBitMask = 0
+            playerShield.physicsBody?.contactTestBitMask = enemyLaserCategory
             shield = true
             playerShield.isHidden = false
             shieldCount = 0
-            player.physicsBody?.contactTestBitMask = 0
-            playerShield.physicsBody?.contactTestBitMask = enemyLaserCategory
         }
     }
     
     
     override func didMove(to view: SKView) {
-        self.scaleMode = SKSceneScaleMode(rawValue: 3)!
+        print("Move to game scene, begin making scene")
         
         addScoreBoard()
         addPlayerLivesBoard()
@@ -553,13 +563,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(roof)
         
         let floor = SKSpriteNode(color: UIColor.black, size: CGSize(width: frame.size.width, height: 2.0))
-        floor.position = CGPoint(x: self.frame.size.width/2,  y: -self.frame.size.height*0.3)
+        floor.position = CGPoint(x: self.frame.size.width/2,  y: -self.frame.size.height*0.15)
         floor.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width:floor.size.width, height: floor.size.height))
         floor.physicsBody?.isDynamic = false
         floor.physicsBody?.categoryBitMask = floorCategory
         floor.physicsBody?.contactTestBitMask = enemyShipCategory
         floor.physicsBody?.collisionBitMask = 0
         addChild(floor)
+        
         
         // Generating non-random, ship objects
         let generateEnemyShip = SKAction.sequence([SKAction.run(addEnemyShip),SKAction.wait(forDuration: 1.2)]) // 1.0s mid
@@ -572,11 +583,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let generateBigStar = SKAction.sequence([SKAction.run(addBigStar),SKAction.wait(forDuration: TimeInterval(random(mid: 0.7, range: 0.2)))]) // 0.7s mid
         let generateNebula = SKAction.sequence([SKAction.run(addNebula), SKAction.wait(forDuration: TimeInterval(random(mid: 6.0, range: 2.0)))]) // 6.0s mid
         
-        run(SKAction.repeatForever(generateEnemyShip))
+        // Generate last ship with detection for Game Over
+        
         run(SKAction.repeatForever(generateSmallStar))
         run(SKAction.repeatForever(generateBigStar))
         run(SKAction.repeatForever(generatePlayerLaser))
         run(SKAction.repeatForever(generateNebula))
         run(SKAction.repeatForever(generateShield))
+        // Count should be equal to total ships - 1, since last ship is spawn separately
+        run(SKAction.sequence([SKAction.repeat(generateEnemyShip, count: totalEnemyShipsCount)]))
+        
     }
 }
