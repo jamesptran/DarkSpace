@@ -15,7 +15,6 @@
 		7520E5A51E578E44009BF4D4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7520E5A31E578E44009BF4D4 /* LaunchScreen.storyboard */; };
 		7520E5B01E578E44009BF4D4 /* spaceGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7520E5AF1E578E44009BF4D4 /* spaceGameTests.swift */; };
 		7520E5BB1E578E44009BF4D4 /* spaceGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7520E5BA1E578E44009BF4D4 /* spaceGameUITests.swift */; };
-		758F38281E5AA19E00F9E8CB /* enemyShipExplode.sks in Resources */ = {isa = PBXBuildFile; fileRef = 758F38271E5AA19E00F9E8CB /* enemyShipExplode.sks */; };
 		75CA22331E5D4DFC00BD4E73 /* Parts.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CA22321E5D4DFC00BD4E73 /* Parts.xcassets */; };
 		75CB19691E5CD79F001C9444 /* Enemies.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CB19681E5CD79F001C9444 /* Enemies.xcassets */; };
 		75CB196B1E5CD7BA001C9444 /* Lasers.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CB196A1E5CD7BA001C9444 /* Lasers.xcassets */; };
@@ -57,7 +56,6 @@
 		7520E5B61E578E44009BF4D4 /* spaceGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = spaceGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7520E5BA1E578E44009BF4D4 /* spaceGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = spaceGameUITests.swift; sourceTree = "<group>"; };
 		7520E5BC1E578E44009BF4D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		758F38271E5AA19E00F9E8CB /* enemyShipExplode.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = enemyShipExplode.sks; sourceTree = "<group>"; };
 		75CA22321E5D4DFC00BD4E73 /* Parts.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Parts.xcassets; sourceTree = "<group>"; };
 		75CB19681E5CD79F001C9444 /* Enemies.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Enemies.xcassets; path = ../Enemies.xcassets; sourceTree = "<group>"; };
 		75CB196A1E5CD7BA001C9444 /* Lasers.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Lasers.xcassets; sourceTree = "<group>"; };
@@ -129,7 +127,6 @@
 				75CB196C1E5CD7EB001C9444 /* UI.xcassets */,
 				7520E5A31E578E44009BF4D4 /* LaunchScreen.storyboard */,
 				7520E5A61E578E44009BF4D4 /* Info.plist */,
-				758F38271E5AA19E00F9E8CB /* enemyShipExplode.sks */,
 			);
 			path = spaceGame;
 			sourceTree = "<group>";
@@ -264,7 +261,6 @@
 			files = (
 				75CB196F1E5CD81F001C9444 /* PlayerShip.xcassets in Resources */,
 				7520E5A01E578E44009BF4D4 /* Main.storyboard in Resources */,
-				758F38281E5AA19E00F9E8CB /* enemyShipExplode.sks in Resources */,
 				75CB196D1E5CD7EB001C9444 /* UI.xcassets in Resources */,
 				7520E5A21E578E44009BF4D4 /* Assets.xcassets in Resources */,
 				75CB19711E5CD835001C9444 /* Background.xcassets in Resources */,
