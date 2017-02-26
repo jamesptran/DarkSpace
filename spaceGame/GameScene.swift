@@ -47,14 +47,15 @@ extension CGPoint {
 
 
 class enemyShip: SKSpriteNode {
-    var hp = 2
+    var hp = 4
+    var laserSpawnTime : TimeInterval = 0
 }
 
 class playerShip: SKSpriteNode {
     var life = 3
     func loseALife(){
         life -= 1
-        if (life == 0){
+        if (life == -1){
             exit(0)
             // This is where Game Over scene appears
             //let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
@@ -93,10 +94,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var restartButton : UIButton!
     var score : Int = 0
+    var currentSystemTime : TimeInterval = 0.0
 
     
     var touchLocationX: CGFloat? = nil
-    var enemyShipsHitByLaser : [enemyShip] = [enemyShip]()
     
     
     override func sceneDidLoad() {
@@ -124,9 +125,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var right = false
     var left = false
+    var timeOfLastLaser: TimeInterval = 0.0
     override func update(_ currentTime: TimeInterval) {
+        // Assign the currentSystemTime as currentTime to calculate spawn time
+        currentSystemTime = currentTime
+        
+        
         // Update player's position looking at touchLocationX
-        let playerSpeed : Int = 200
+        let playerSpeed : Int = 300
         
         if (player.position.x < touchLocationX! - 5){
             if (!right){
@@ -153,6 +159,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 playerShield.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
             }
         }
+        
+        // Add laser fire to enemy based on last laser spawn time.
+        enumerateChildNodes(withName: "enemy1", using: {(node: SKNode!, stop: UnsafeMutablePointer <ObjCBool>) -> Void in
+            
+            if ((currentTime - (node as! enemyShip).laserSpawnTime) > 1.5){
+                (node as! enemyShip).laserSpawnTime = currentTime
+                self.addEnemyLaser(ship: (node as! enemyShip))
+            }
+        })
+        
+        
     }
     
     
@@ -220,7 +237,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func addEnemyShip(){
-        let speed: Double = 20
+        let speed: Double = 12
         let ship = enemyShip(imageNamed: "enemyBlack3")
         ship.setScale(0.5)
         ship.zPosition = 1
@@ -228,7 +245,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let shipX = random(min: ship.size.width/2, max: self.frame.size.width - ship.size.width/2)
         
         ship.position = CGPoint(x: shipX, y: shipY)
-        
+        ship.name = "enemy1"
         addChild(ship)
         ship.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: ship.size.width,
                                                              height: ship.size.height))
@@ -245,14 +262,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ship.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: -speed))
         ship.physicsBody?.mass = 70
         ship.physicsBody?.linearDamping = 0
-        
-        
         addEnemyLaser(ship: ship)
+        ship.laserSpawnTime = currentSystemTime
     }
     
     
     func addEnemyLaser(ship: SKSpriteNode){
-        let laser = SKSpriteNode(imageNamed: "laserRed14")
+        let laser = SKSpriteNode(imageNamed: "laserRed05")
         laser.setScale(0.5)
         laser.position = ship.position
         laser.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: laser.size.width, height: laser.size.height))
@@ -261,44 +277,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         laser.physicsBody?.contactTestBitMask = floorCategory
         addChild(laser)
         laser.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -3.0))
+        
         laser.physicsBody?.linearDamping = 0
      }
     
     
-    func addPlayerLaserPosition(laserX: CGFloat, laserY: CGFloat) -> SKSpriteNode{
-        let laser = SKSpriteNode(imageNamed: "laserBlue06")
-        laser.setScale(0.5)
-        let speed: Double = 1.5
-        laser.zPosition = 2
-        laser.position = CGPoint(x: laserX, y: laserY)
-        
-        laser.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: laser.size.width,
-                                                              height: laser.size.height))
-        laser.physicsBody?.categoryBitMask = playerLaserCategory
-        laser.physicsBody?.contactTestBitMask = enemyShipCategory
-        laser.physicsBody?.collisionBitMask = 0
-        laser.physicsBody?.linearDamping = 0
-        addChild(laser)
-        laser.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: speed))
-        return(laser)
-    }
-    
-    
     func addPlayerLaser(){
-        let speed: Double = 1.5
-        let xLaserLeft = player.position.x - player.size.width/2
-        let xLaserRight = player.position.x + player.size.width/2
-        let yLaser = player.position.y
-        
-        let laserLeft = addPlayerLaserPosition(laserX: xLaserLeft, laserY: yLaser)
-        let laserRight = addPlayerLaserPosition(laserX: xLaserRight, laserY: yLaser)
-        laserLeft.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: speed))
-        laserRight.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: speed))
+        // Create a laser for each gun the player has
+        self.player.enumerateChildNodes(withName: "playerGun", using: {
+            (node: SKNode!, stop: UnsafeMutablePointer <ObjCBool>) -> Void in
+            let laser = SKSpriteNode(imageNamed: "laserBlue04")
+            laser.setScale(0.5)
+            let speed: Double = 5
+            laser.zPosition = 2
+            laser.position = CGPoint(x: self.player.position.x + node.position.x/2, y: self.player.position.y + node.position.y)
+            
+            laser.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: laser.size.width,
+                                                                  height: laser.size.height))
+            laser.physicsBody?.categoryBitMask = playerLaserCategory
+            laser.physicsBody?.contactTestBitMask = enemyShipCategory
+            laser.physicsBody?.collisionBitMask = 0
+            laser.physicsBody?.linearDamping = 0
+            self.addChild(laser)
+            laser.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: speed))
+        })
     }
     
     
     func playerLaserExplode(x: CGFloat, y: CGFloat){
-        let shot = SKSpriteNode(imageNamed: "laserBlue10")
+        let shot = SKSpriteNode(imageNamed: "laserBlue08")
         shot.setScale(0.5)
         shot.position = CGPoint(x: x, y: y)
         addChild(shot)
@@ -396,6 +403,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let gunRight = SKSpriteNode(imageNamed: "gun02")
         let gunLeft = SKSpriteNode(imageNamed: "gun02")
         let afterburner = SKSpriteNode(imageNamed: "fire16")
+        
+        gunRight.name = "playerGun"
+        gunLeft.name = "playerGun"
+        
         engine.setScale(0.5)
         engine.position = CGPoint(x: 0, y: -player.size.height - engine.size.height/2)
         
@@ -502,6 +513,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     override func didMove(to view: SKView) {
+        self.scaleMode = SKSceneScaleMode(rawValue: 3)!
+        
         addScoreBoard()
         addPlayerLivesBoard()
         
@@ -549,20 +562,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(floor)
         
         // Generating non-random, ship objects
-        let generateEnemyShip = SKAction.sequence([SKAction.run(addEnemyShip),SKAction.wait(forDuration: 1.5)]) // 1.5s mid
-        let generateLaser = SKAction.sequence([SKAction.run(addPlayerLaser), SKAction.wait(forDuration: 0.6)]) // 0.6s mid
+        let generateEnemyShip = SKAction.sequence([SKAction.run(addEnemyShip),SKAction.wait(forDuration: 1.2)]) // 1.0s mid
+        let generatePlayerLaser = SKAction.sequence([SKAction.run(addPlayerLaser), SKAction.wait(forDuration: 0.2)]) // 0.2s mid
+        // Generate shield every 6s after shield is gone
+        let generateShield = SKAction.sequence([SKAction.run(resetShield), SKAction.wait(forDuration: 0.5)])
         
         // Generating random timing, environment objects
         let generateSmallStar = SKAction.sequence([SKAction.run(addSmallStar),SKAction.wait(forDuration: TimeInterval(random(mid: 0.3, range: 0.1)))]) // 0.3s mid
         let generateBigStar = SKAction.sequence([SKAction.run(addBigStar),SKAction.wait(forDuration: TimeInterval(random(mid: 0.7, range: 0.2)))]) // 0.7s mid
         let generateNebula = SKAction.sequence([SKAction.run(addNebula), SKAction.wait(forDuration: TimeInterval(random(mid: 6.0, range: 2.0)))]) // 6.0s mid
-        let generateShield = SKAction.sequence([SKAction.run(resetShield), SKAction.wait(forDuration: 0.5)])
-        run(SKAction.repeat(generateEnemyShip, count: 50))
+        
+        run(SKAction.repeatForever(generateEnemyShip))
         run(SKAction.repeatForever(generateSmallStar))
         run(SKAction.repeatForever(generateBigStar))
-        run(SKAction.repeatForever(generateLaser))
+        run(SKAction.repeatForever(generatePlayerLaser))
         run(SKAction.repeatForever(generateNebula))
         run(SKAction.repeatForever(generateShield))
     }
-    
 }
