@@ -93,14 +93,14 @@ class MainMenuScene: SKScene {
     func addControlPad(){
         let rightControlNode = SKSpriteNode(color: UIColor.white, size: CGSize(width: self.frame.size.width/2.1, height: self.self.frame.size.width/2.1))
         rightControlNode.name = "rightControl"
-        rightControlNode.position = CGPoint(x: self.frame.size.width/4, y: rightControlNode.frame.size.height/2)
+        rightControlNode.position = CGPoint(x: self.frame.size.width*3/4, y: rightControlNode.frame.size.height/2)
         rightControlNode.zPosition = 10
         rightControlNode.alpha = 0.1
         
         
         let leftControlNode = SKSpriteNode(color: UIColor.white, size: CGSize(width: self.frame.size.width/2.1, height: self.frame.size.width/2.1))
         leftControlNode.name = "leftControl"
-        leftControlNode.position = CGPoint(x: self.frame.size.width*3/4, y: leftControlNode.frame.size.height/2)
+        leftControlNode.position = CGPoint(x: self.frame.size.width*1/4, y: leftControlNode.frame.size.height/2)
         leftControlNode.zPosition = 10
         leftControlNode.alpha = 0.1
         

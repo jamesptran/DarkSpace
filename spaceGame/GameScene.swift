@@ -172,7 +172,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         // Update player's position looking at touchLocationX
-        
         //processUserMotion(forUpdate: currentTime)
         
         let playerSpeed : Int = 350
@@ -271,6 +270,92 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 enemyPlayerExplode(x: secondBody.position.x, y: secondBody.position.y)
                 secondBody.removeFromParent()
             }
+        }
+    }
+    
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
+        
+        guard let touch = touches.first else {
+            return
+        }
+        
+        let touchLocation = touch.location(in: self)
+        touchLocationX = touchLocation.x
+        touchLocationY = touchLocation.y
+        
+        let node : SKNode = self.atPoint(touchLocation)
+        if node.name == "leftControl" {
+            left = true
+            right = false
+        } else if node.name == "rightControl" {
+            right = true
+            left = false
+        } else {
+            right = false
+            left = false
+        }
+    }
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        
+        
+        guard let touch = touches.first else {
+            return
+        }
+        
+        let touchLocation = touch.location(in: self)
+        touchLocationX = touchLocation.x
+        touchLocationY = touchLocation.y
+        
+        let node : SKNode = self.atPoint(touchLocation)
+        if node.name == "leftControl" {
+            left = true
+            right = false
+        } else if node.name == "rightControl" {
+            right = true
+            left = false
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        guard let touch = touches.first else {
+            return
+        }
+        
+        let touchLocation = touch.location(in: self)
+        
+        player.texture = SKTexture(imageNamed:"player")
+        touchLocationX = player.position.x
+        touchLocationY = player.position.y
+        
+        let node : SKNode = self.atPoint(touchLocation)
+        if node.name == "leftControl" {
+            left = false
+        } else if node.name == "rightControl" {
+            right = false
+        } else {
+            left = false
+            right = false
+        }
+        if node.name == "pauseButton" {
+            if self.isPaused == false {
+                addMenuButton()
+                addResumeButton()
+                self.isPaused = true
+            }
+        } else if node.name == "resumeButton" {
+            self.isPaused = false
+            node.removeFromParent()
+            childNode(withName: "menuButton")?.removeFromParent()
+        } else if node.name == "menuButton" {
+            let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+            let scene = MainMenuScene(size: self.size)
+            self.view?.presentScene(scene, transition: reveal)
         }
     }
     
@@ -404,13 +489,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let multiplySymbol = SKSpriteNode(imageNamed: "numeralX")
         
         let charSizeWidth = playerMiniImage.size.width
-        let charSizeHeight = playerMiniImage.size.height
-        
+        let charSizeHeight = playerMiniImage.size.height + 22
         updatePlayerLives()
         
-        playerMiniImage.position = CGPoint(x: charSizeWidth, y: self.frame.height - charSizeHeight)
-        multiplySymbol.position = CGPoint(x: charSizeWidth*2, y: self.frame.height - charSizeHeight)
-        playerLifeNum.position = CGPoint(x: charSizeWidth*3, y: self.frame.height - charSizeHeight)
+        playerMiniImage.position = CGPoint(x: 48*1.5+charSizeWidth, y: self.frame.height - charSizeHeight)
+        multiplySymbol.position = CGPoint(x: 48*1.5+charSizeWidth*2, y: self.frame.height - charSizeHeight)
+        playerLifeNum.position = CGPoint(x: 48*1.5+charSizeWidth*3, y: self.frame.height - charSizeHeight)
         
         playerMiniImage.zPosition = 10
         multiplySymbol.zPosition = 10
@@ -421,83 +505,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesMoved(touches, with: event)
+    func addPauseButton(){
+        let pauseButton = SKSpriteNode(imageNamed: "flatLight12")
+        pauseButton.position = CGPoint(x: pauseButton.size.width, y: self.frame.height - pauseButton.size.height)
         
-        if touches.count == 2 {
-            print("keep shooting")
-        }
-        
-        guard let touch = touches.first else {
-            return
-        }
-        
-        let touchLocation = touch.location(in: self)
-        touchLocationX = touchLocation.x
-        touchLocationY = touchLocation.y
-        
-        let node : SKNode = self.atPoint(touchLocation)
-        if node.name == "leftControl" {
-            left = true
-            right = false
-        } else if node.name == "rightControl" {
-            right = true
-            left = false
-        } else {
-            right = false
-            left = false
-        }
+        pauseButton.name = "pauseButton"
+        pauseButton.zPosition = 10
+        addChild(pauseButton)
     }
     
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
+    func addMenuButton() {
+        let menuButton = SKLabelNode(text: "Back to main menu")
+        menuButton.fontSize = 30
+        menuButton.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 - menuButton.frame.size.height)
+        menuButton.isHidden = false
+        menuButton.name = "menuButton"
         
-        if touches.count == 2 {
-            print("start shooting")
-        }
-        
-        guard let touch = touches.first else {
-            return
-        }
-        
-        let touchLocation = touch.location(in: self)
-        touchLocationX = touchLocation.x
-        touchLocationY = touchLocation.y
-        
-        let node : SKNode = self.atPoint(touchLocation)
-        if node.name == "leftControl" {
-            left = true
-            right = false
-        } else if node.name == "rightControl" {
-            right = true
-            left = false
-        } else {
-            print("begin shooting")
-        }
+        addChild(menuButton)
     }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-        guard let touch = touches.first else {
-            return
-        }
+    
+    func addResumeButton() {
+        let resumeButton = SKLabelNode(text: "Resume")
+        resumeButton.fontSize = 50
+        resumeButton.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 + resumeButton.frame.size.height/2)
+        resumeButton.isHidden = false
+        resumeButton.name = "resumeButton"
         
-        let touchLocation = touch.location(in: self)
-        
-        player.texture = SKTexture(imageNamed:"player")
-        touchLocationX = player.position.x
-        touchLocationY = player.position.y
-        
-        let node : SKNode = self.atPoint(touchLocation)
-        if node.name == "leftControl" {
-            left = false
-        } else if node.name == "rightControl" {
-            right = false
-        } else {
-            left = false
-            right = false
-        }
+        addChild(resumeButton)
     }
     
     
@@ -639,6 +675,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addScoreBoard()
         addPlayerLivesBoard()
         addControlPad()
+        addPauseButton()
  
         // These are for accelerometer movement.
 //        if (motionManager.isAccelerometerAvailable) {
