@@ -132,22 +132,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         redScreen.run(SKAction.sequence([SKAction.fadeOut(withDuration: 0.2), SKAction.removeFromParent()]))
     }
     
-    
-    /*func processUserMotion(forUpdate currentTime: CFTimeInterval) {
-        var playerForceVector : CGVector
-        if let data = motionManager.accelerometerData {
-            if fabs(data.acceleration.x) > 0.1 {
-                player.physicsBody?.applyForce(CGVector(dx: 40*CGFloat(data.acceleration.x), dy: 0))
-                playerShield.physicsBody?.applyForce(CGVector(dx: 40*CGFloat(data.acceleration.x), dy: 0))
-                if (data.acceleration.x > 0){
-                    player.texture = SKTexture(imageNamed: "playerRight")
-                } else {
-                    player.texture = SKTexture(imageNamed: "playerLeft")
-                }
-            }
-        }
-    }*/
-    
     func detectOutOfBounds(){
         if player.position.x > (self.frame.size.width - playerShield.size.width/4) {
             right = false
@@ -679,12 +663,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addControlPad()
         addPauseButton()
  
-        // These are for accelerometer movement.
-//        if (motionManager.isAccelerometerAvailable) {
-//            motionManager.startAccelerometerUpdates()
-//        }
-        
-        
         self.backgroundColor = UIColor.black
         player.setScale(0.5)
         player.zPosition = 2
