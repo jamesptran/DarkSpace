@@ -521,6 +521,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         menuButton.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 - menuButton.frame.size.height)
         menuButton.isHidden = false
         menuButton.name = "menuButton"
+        menuButton.zPosition = 10
         
         addChild(menuButton)
     }
@@ -532,6 +533,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         resumeButton.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 + resumeButton.frame.size.height/2)
         resumeButton.isHidden = false
         resumeButton.name = "resumeButton"
+        resumeButton.zPosition = 10
         
         addChild(resumeButton)
     }
