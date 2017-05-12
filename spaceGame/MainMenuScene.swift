@@ -125,7 +125,7 @@ class MainMenuScene: SKScene {
         addControlPad()
         
         self.backgroundColor = UIColor.black
-        startButton.fontSize = 70
+        startButton.fontSize = 150
         startButton.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         startButton.fontColor = UIColor.white
         startButton.zPosition = 1

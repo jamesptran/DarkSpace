@@ -18,16 +18,37 @@ class GameOverScene: SKScene {
     let scoreLabel = SKLabelNode(text: "Score: 0")
     let restartButton = SKLabelNode(text: "Restart")
     let menuButton = SKLabelNode(text: "Menu")
+    let perfectLabel1 = SKLabelNode(text: "Perfect!")
+    let perfectLabel2 = SKLabelNode(text: "You got the highest possible score!")
     
     override func didMove(to view: SKView) {
         print("Move to game over scene")
         self.backgroundColor = UIColor.black        
         let scoreString = "Score: " + String(score)
         
+        
+        
         scoreLabel.text = scoreString
         gameOverLabel.fontSize = 100
         gameOverLabel.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         gameOverLabel.fontColor = UIColor.white
+        
+        
+        perfectLabel2.fontSize = 40
+        perfectLabel2.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 + perfectLabel2.frame.size.height + gameOverLabel.frame.size.height*2)
+        perfectLabel2.fontColor = UIColor.white
+        
+        perfectLabel1.fontSize = 60
+        perfectLabel1.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 + perfectLabel2.frame.size.height + gameOverLabel.frame.size.height*2 + perfectLabel1.frame.size.height)
+        perfectLabel1.fontColor = UIColor.white
+        
+        if (score == 100) {
+            perfectLabel1.isHidden = false
+            perfectLabel2.isHidden = false
+        } else {
+            perfectLabel1.isHidden = true
+            perfectLabel2.isHidden = true
+        }
 
         
         scoreLabel.fontSize = 40
@@ -45,6 +66,9 @@ class GameOverScene: SKScene {
         menuButton.fontColor = UIColor.white
         
         
+        
+        addChild(perfectLabel1)
+        addChild(perfectLabel2)
         addChild(gameOverLabel)
         addChild(scoreLabel)
         addChild(restartButton)

@@ -83,7 +83,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let playerLifeNum = SKSpriteNode(imageNamed: "numeral0")
     var shield = true
     
-    let totalEnemyShipsCount = 50
+    let totalEnemyShipsCount = 100
     var totalEnemyShipsRemoved = 0
     
     var score : Int = 0
