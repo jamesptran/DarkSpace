@@ -5,6 +5,9 @@ You are pilotting the commander ship with hi-tech weapons. On the way back home,
 Built with SpriteKit and Swift 3. Game art taken from http://opengameart.org. Main code files are in spaceGame directory.
 
 Below are some screenshots for the game. Contact me if you are interested in trying.
-![Alt text](Screenshots/screenshot1.png?raw=true "Screenshot1")
-![Alt text](Screenshots/screenshot2.png?raw=true "Screenshot2")
-![Alt text](Screenshots/screenshot3.png?raw=true "Screenshot3")
+
+![Screenshot1](Screenshots/screenshot1.png?raw=true "Screenshot1")
+
+![Screenshot2](Screenshots/screenshot2.png?raw=true "Screenshot2")
+
+![Screenshot3](Screenshots/screenshot3.png?raw=true "Screenshot3")
