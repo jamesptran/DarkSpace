@@ -7,7 +7,7 @@
 //
 
 //
-//  GameOverUI.swift
+//  MainMenuScene.swift
 //  spaceGame
 //
 //  Created by James Tran on 2/25/17.
@@ -91,14 +91,14 @@ class MainMenuScene: SKScene {
     }
     
     func addControlPad(){
-        let rightControlNode = SKSpriteNode(color: UIColor.white, size: CGSize(width: self.frame.size.width/2.1, height: self.self.frame.size.width/2.1))
+        let rightControlNode = SKSpriteNode(color: UIColor.white, size: CGSize(width: self.frame.size.width/2.1, height: self.frame.size.width/1.5))
         rightControlNode.name = "rightControl"
         rightControlNode.position = CGPoint(x: self.frame.size.width*3/4, y: rightControlNode.frame.size.height/2)
         rightControlNode.zPosition = 10
         rightControlNode.alpha = 0.1
         
         
-        let leftControlNode = SKSpriteNode(color: UIColor.white, size: CGSize(width: self.frame.size.width/2.1, height: self.frame.size.width/2.1))
+        let leftControlNode = SKSpriteNode(color: UIColor.white, size: CGSize(width: self.frame.size.width/2.1, height: self.frame.size.width/1.5))
         leftControlNode.name = "leftControl"
         leftControlNode.position = CGPoint(x: self.frame.size.width*1/4, y: leftControlNode.frame.size.height/2)
         leftControlNode.zPosition = 10
@@ -107,16 +107,23 @@ class MainMenuScene: SKScene {
         addChild(rightControlNode)
         addChild(leftControlNode)
         
-        let rightControlLabel = SKLabelNode(text: "Touch here to go right")
+        let rightControlLabel = SKLabelNode(text: "Touch to go right")
         rightControlLabel.fontSize = 30
         rightControlLabel.position = rightControlNode.position
+        rightControlLabel.fontName = "AvenirNext-Medium"
         
-        let leftControlLabel = SKLabelNode(text: "Touch here to go left")
+        let leftControlLabel = SKLabelNode(text: "Touch to go left")
         leftControlLabel.fontSize = 30
         leftControlLabel.position = leftControlNode.position
+        leftControlLabel.fontName = "AvenirNext-Medium"
         
         addChild(rightControlLabel)
         addChild(leftControlLabel)
+        
+        if UI_USER_INTERFACE_IDIOM() == .phone {
+            rightControlLabel.fontSize = 15
+            leftControlLabel.fontSize = 15
+        }
     }
     
     
@@ -126,6 +133,7 @@ class MainMenuScene: SKScene {
         
         self.backgroundColor = UIColor.black
         startButton.fontSize = 150
+        startButton.fontName = "AvenirNext-Medium"
         startButton.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         startButton.fontColor = UIColor.white
         startButton.zPosition = 1
@@ -138,7 +146,6 @@ class MainMenuScene: SKScene {
         addChild(optionButton)*/
         
         
-        
         // Generating random timing, environment objects
         let generateSmallStar = SKAction.sequence([SKAction.run(addSmallStar),SKAction.wait(forDuration: TimeInterval(random(mid: 0.2, range: 0.1)))]) // 0.3s mid
         let generateBigStar = SKAction.sequence([SKAction.run(addBigStar),SKAction.wait(forDuration: TimeInterval(random(mid: 0.5, range: 0.2)))]) // 0.7s mid
@@ -146,7 +153,9 @@ class MainMenuScene: SKScene {
         run(SKAction.repeatForever(generateSmallStar))
         run(SKAction.repeatForever(generateBigStar))
         
-        
+        if UI_USER_INTERFACE_IDIOM() == .phone {
+            startButton.fontSize = 75
+        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -156,9 +165,13 @@ class MainMenuScene: SKScene {
         
         let touchLocation = touch.location(in: self)
         if startButton.contains(touchLocation) {
-            let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-            let gameScene = GameScene(size: self.size)
-            self.view?.presentScene(gameScene, transition: reveal)
+            let reveal = SKTransition.moveIn(with: .up, duration: 0.5)
+            let levelPickerScene = LevelPickerScene(size: self.size)
+            
+            
+            
+            
+            self.view?.presentScene(levelPickerScene, transition: reveal)
         }
         
     }

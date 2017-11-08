@@ -13,63 +13,125 @@ import SpriteKit
 
 class GameOverScene: SKScene {
     var score : Int = 0
+    var totalPawns : Int = 0
+    var totalKnights : Int = 0
+    var totalBishops : Int = 0
+    var totalRooks : Int = 0
+    var totalQueens : Int = 0
+    var totalKings : Int = 0
     
-    let gameOverLabel = SKLabelNode(text: "Game Over")
     let scoreLabel = SKLabelNode(text: "Score: 0")
     let restartButton = SKLabelNode(text: "Restart")
     let menuButton = SKLabelNode(text: "Menu")
-    let perfectLabel1 = SKLabelNode(text: "Perfect!")
-    let perfectLabel2 = SKLabelNode(text: "You got the highest possible score!")
+    let infoLabelTop = SKLabelNode(text: "")
+    let infoLabelBottom = SKLabelNode(text: "")
+    
+    var killedBy : LaserType = .normal
+    var isDestroyed : Bool = false
+    var levelID : Int = -1
+    let defaults:UserDefaults = UserDefaults.standard
     
     override func didMove(to view: SKView) {
         print("Move to game over scene")
-        self.backgroundColor = UIColor.black        
-        let scoreString = "Score: " + String(score)
+        self.backgroundColor = UIColor.black
+        let maxScore = totalPawns + totalKnights * 3 + totalBishops * 3 + totalRooks * 5 + totalQueens * 9 + totalKings * 100
+        print(score)
+        print(maxScore)
         
-        
+        let percentCompletion = Int(Float(score) / Float(maxScore) * 100.0)
+        let scoreString = String(format: "Score: %i%% destruction", percentCompletion)
         
         scoreLabel.text = scoreString
-        gameOverLabel.fontSize = 100
-        gameOverLabel.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
-        gameOverLabel.fontColor = UIColor.white
         
+        infoLabelBottom.fontSize = 40
+        infoLabelBottom.fontName = "AvenirNext-Medium"
+        infoLabelBottom.fontColor = UIColor.white
         
-        perfectLabel2.fontSize = 40
-        perfectLabel2.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 + perfectLabel2.frame.size.height + gameOverLabel.frame.size.height*2)
-        perfectLabel2.fontColor = UIColor.white
+        infoLabelTop.fontSize = 50
+        infoLabelTop.fontName = "AvenirNext-Medium"
+        infoLabelTop.fontColor = UIColor.white
         
-        perfectLabel1.fontSize = 60
-        perfectLabel1.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 + perfectLabel2.frame.size.height + gameOverLabel.frame.size.height*2 + perfectLabel1.frame.size.height)
-        perfectLabel1.fontColor = UIColor.white
-        
-        if (score == 100) {
-            perfectLabel1.isHidden = false
-            perfectLabel2.isHidden = false
+        if isDestroyed {
+            switch killedBy {
+            case .normal:
+                infoLabelTop.text = "Destroyed by MK I"
+                infoLabelBottom.text = "Mark Is are average in all aspects"
+            case .fast:
+                infoLabelTop.text = "Destroyed by MK II"
+                infoLabelBottom.text = "Mark IIs are fast with high fire rate"
+            case .piercing:
+                infoLabelTop.text = "Destroyed by Type P"
+                infoLabelBottom.text = "Type Ps pierce through shield easily"
+            case .gattling:
+                infoLabelTop.text = "Destroyed by Type G"
+                infoLabelBottom.text = "Type Gs are fast but cannot pierce shield"
+            case .plasma:
+                infoLabelTop.text = "Destroyed by Type O"
+                infoLabelBottom.text = "Don't ever get hit by Type O"
+            }
+        } else if percentCompletion < 70 {
+            infoLabelTop.text = "Mission failed"
+            infoLabelBottom.text = "Too many of them escaped..."
+        } else if percentCompletion < 90 {
+            infoLabelTop.text = "Mission success"
+            infoLabelBottom.text = "You destroyed the majority of them."
+            
+            let levelUnlocked = defaults.integer(forKey: "LevelUnlocked")
+            if levelUnlocked == levelID {
+                defaults.set(levelID + 1, forKey: "LevelUnlocked")
+            }
+            
         } else {
-            perfectLabel1.isHidden = true
-            perfectLabel2.isHidden = true
+            infoLabelTop.text = "Almost perfect"
+            if percentCompletion == 100 {
+                infoLabelTop.text = "Perfect!"
+            }
+            infoLabelBottom.text = "They don't stand a chance."
+            
+            let levelUnlocked = defaults.integer(forKey: "LevelUnlocked")
+            if levelUnlocked == levelID {
+                defaults.set(levelID + 1, forKey: "LevelUnlocked")
+            }
         }
 
         
         scoreLabel.fontSize = 40
-        scoreLabel.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 - gameOverLabel.frame.size.height/2 - scoreLabel.frame.size.height)
+        scoreLabel.fontName = "AvenirNext-Medium"
         scoreLabel.fontColor = UIColor.white
 
         
         restartButton.fontSize = 30
-        restartButton.position = CGPoint(x: self.frame.size.width/2, y: scoreLabel.position.y - scoreLabel.frame.size.height/2 - restartButton.frame.size.height)
+        restartButton.fontName = "AvenirNext-Medium"
         restartButton.fontColor = UIColor.white
         
         
         menuButton.fontSize = 30
-        menuButton.position = CGPoint(x: menuButton.frame.size.width, y: self.frame.size.height - menuButton.frame.size.height * 2)
+        menuButton.fontName = "AvenirNext-Medium"
         menuButton.fontColor = UIColor.white
         
+        if UI_USER_INTERFACE_IDIOM() == .phone {
+            infoLabelTop.fontSize = 20
+            infoLabelBottom.fontSize = 15
+            scoreLabel.fontSize = 15
+            restartButton.fontSize = 25
+            menuButton.fontSize = 25
+        }
         
         
-        addChild(perfectLabel1)
-        addChild(perfectLabel2)
-        addChild(gameOverLabel)
+        
+        infoLabelBottom.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 + infoLabelBottom.frame.size.height)
+            
+        infoLabelTop.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 + infoLabelBottom.frame.size.height + infoLabelTop.frame.size.height)
+        
+        scoreLabel.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 - scoreLabel.frame.size.height)
+        
+        restartButton.position = CGPoint(x: self.frame.size.width/2, y: scoreLabel.position.y - scoreLabel.frame.size.height/2 - restartButton.frame.size.height)
+        
+        menuButton.position = CGPoint(x: menuButton.frame.size.width, y: self.frame.size.height - menuButton.frame.size.height * 2)
+        
+
+        addChild(infoLabelTop)
+        addChild(infoLabelBottom)
         addChild(scoreLabel)
         addChild(restartButton)
         addChild(menuButton)
@@ -84,6 +146,14 @@ class GameOverScene: SKScene {
         if restartButton.contains(touchLocation) {
             let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
             let scene = GameScene(size: self.size)
+
+            scene.totalPawnsCount = self.totalPawns
+            scene.totalBishopsCount = self.totalBishops
+            scene.totalKnightsCount = self.totalKnights
+            scene.totalRooksCount = self.totalRooks
+            scene.totalQueensCount = self.totalQueens
+            scene.totalKingsCount = self.totalKings
+            
             self.view?.presentScene(scene, transition: reveal)
         }
         if menuButton.contains(touchLocation) {

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7503FB3A1F9915E000E7944C /* LevelPickerScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7503FB391F9915E000E7944C /* LevelPickerScene.swift */; };
+		751593041FA24C8400A8AE5C /* LevelViewScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751593031FA24C8400A8AE5C /* LevelViewScene.swift */; };
 		7520E5951E578E44009BF4D4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7520E5941E578E44009BF4D4 /* AppDelegate.swift */; };
 		7520E59B1E578E44009BF4D4 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7520E59A1E578E44009BF4D4 /* GameScene.swift */; };
 		7520E59D1E578E44009BF4D4 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7520E59C1E578E44009BF4D4 /* GameViewController.swift */; };
@@ -24,6 +26,7 @@
 		75CB196F1E5CD81F001C9444 /* PlayerShip.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CB196E1E5CD81F001C9444 /* PlayerShip.xcassets */; };
 		75CB19711E5CD835001C9444 /* Background.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CB19701E5CD835001C9444 /* Background.xcassets */; };
 		75CB19731E5CD86E001C9444 /* Effects.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75CB19721E5CD86E001C9444 /* Effects.xcassets */; };
+		75DCA4B01F9DA97200D4374F /* ShipClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DCA4AF1F9DA97200D4374F /* ShipClass.swift */; };
 		75F74E7E1E64942000ED5EFA /* MainMenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F74E7D1E64942000ED5EFA /* MainMenuScene.swift */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +48,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7503FB391F9915E000E7944C /* LevelPickerScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelPickerScene.swift; sourceTree = "<group>"; };
+		751593031FA24C8400A8AE5C /* LevelViewScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelViewScene.swift; sourceTree = "<group>"; };
 		7520E5911E578E44009BF4D4 /* spaceGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = spaceGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7520E5941E578E44009BF4D4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7520E59A1E578E44009BF4D4 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -59,7 +64,7 @@
 		7520E5B61E578E44009BF4D4 /* spaceGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = spaceGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7520E5BA1E578E44009BF4D4 /* spaceGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = spaceGameUITests.swift; sourceTree = "<group>"; };
 		7520E5BC1E578E44009BF4D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		752CBE491E6BC42200DE9382 /* Planet.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Planet.xcassets; path = spaceGame/Planet.xcassets; sourceTree = "<group>"; };
+		752CBE491E6BC42200DE9382 /* Planet.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Planet.xcassets; sourceTree = "<group>"; };
 		7569F4A51E627D50004AC433 /* GameOverScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
 		75CA22321E5D4DFC00BD4E73 /* Parts.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Parts.xcassets; sourceTree = "<group>"; };
 		75CB19681E5CD79F001C9444 /* Enemies.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Enemies.xcassets; path = ../Enemies.xcassets; sourceTree = "<group>"; };
@@ -68,6 +73,7 @@
 		75CB196E1E5CD81F001C9444 /* PlayerShip.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = PlayerShip.xcassets; sourceTree = "<group>"; };
 		75CB19701E5CD835001C9444 /* Background.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Background.xcassets; sourceTree = "<group>"; };
 		75CB19721E5CD86E001C9444 /* Effects.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Effects.xcassets; sourceTree = "<group>"; };
+		75DCA4AF1F9DA97200D4374F /* ShipClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipClass.swift; sourceTree = "<group>"; };
 		75F74E7D1E64942000ED5EFA /* MainMenuScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenuScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,11 +105,11 @@
 		7520E5881E578E44009BF4D4 = {
 			isa = PBXGroup;
 			children = (
-				752CBE491E6BC42200DE9382 /* Planet.xcassets */,
 				7520E5931E578E44009BF4D4 /* spaceGame */,
 				7520E5AE1E578E44009BF4D4 /* spaceGameTests */,
 				7520E5B91E578E44009BF4D4 /* spaceGameUITests */,
 				7520E5921E578E44009BF4D4 /* Products */,
+				75BF233C1FB3BB8F0056C3DC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -123,9 +129,12 @@
 				7520E5A31E578E44009BF4D4 /* LaunchScreen.storyboard */,
 				7520E59E1E578E44009BF4D4 /* Main.storyboard */,
 				7520E5941E578E44009BF4D4 /* AppDelegate.swift */,
-				7520E59A1E578E44009BF4D4 /* GameScene.swift */,
 				7520E59C1E578E44009BF4D4 /* GameViewController.swift */,
+				75DCA4AF1F9DA97200D4374F /* ShipClass.swift */,
 				75F74E7D1E64942000ED5EFA /* MainMenuScene.swift */,
+				7503FB391F9915E000E7944C /* LevelPickerScene.swift */,
+				751593031FA24C8400A8AE5C /* LevelViewScene.swift */,
+				7520E59A1E578E44009BF4D4 /* GameScene.swift */,
 				7569F4A51E627D50004AC433 /* GameOverScene.swift */,
 				7520E5A11E578E44009BF4D4 /* Assets.xcassets */,
 				75CB19721E5CD86E001C9444 /* Effects.xcassets */,
@@ -135,6 +144,7 @@
 				75CB19701E5CD835001C9444 /* Background.xcassets */,
 				75CA22321E5D4DFC00BD4E73 /* Parts.xcassets */,
 				75CB196C1E5CD7EB001C9444 /* UI.xcassets */,
+				752CBE491E6BC42200DE9382 /* Planet.xcassets */,
 				7520E5A61E578E44009BF4D4 /* Info.plist */,
 			);
 			path = spaceGame;
@@ -156,6 +166,13 @@
 				7520E5BC1E578E44009BF4D4 /* Info.plist */,
 			);
 			path = spaceGameUITests;
+			sourceTree = "<group>";
+		};
+		75BF233C1FB3BB8F0056C3DC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -228,6 +245,11 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = P3F5JUT699;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.GameCenter = {
+								enabled = 0;
+							};
+						};
 					};
 					7520E5AA1E578E44009BF4D4 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -303,11 +325,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				751593041FA24C8400A8AE5C /* LevelViewScene.swift in Sources */,
 				7520E59B1E578E44009BF4D4 /* GameScene.swift in Sources */,
 				7520E59D1E578E44009BF4D4 /* GameViewController.swift in Sources */,
+				75DCA4B01F9DA97200D4374F /* ShipClass.swift in Sources */,
 				75F74E7E1E64942000ED5EFA /* MainMenuScene.swift in Sources */,
 				7520E5951E578E44009BF4D4 /* AppDelegate.swift in Sources */,
 				7569F4A61E627D50004AC433 /* GameOverScene.swift in Sources */,
+				7503FB3A1F9915E000E7944C /* LevelPickerScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -459,13 +484,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Phuc Tran (CKJ8QLX22R)";
 				DEVELOPMENT_TEAM = P3F5JUT699;
 				INFOPLIST_FILE = spaceGame/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = PNoodl3s.spaceGame;
+				PRODUCT_BUNDLE_IDENTIFIER = com.PNoodl3s.darkSpace;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -473,13 +500,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: James Tran (P3F5JUT699)";
 				DEVELOPMENT_TEAM = P3F5JUT699;
 				INFOPLIST_FILE = spaceGame/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = PNoodl3s.spaceGame;
+				PRODUCT_BUNDLE_IDENTIFIER = com.PNoodl3s.darkSpace;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
